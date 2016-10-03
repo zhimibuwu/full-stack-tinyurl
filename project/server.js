@@ -3,6 +3,9 @@ var app = express();  // a web app instance
 var restRouter = require('./routers/rest');
 var redirectRouter = require('./routers/redirect');
 var indexRouter = require('./routers/index');
+var mongoose = require('mongoose');
+
+mongoose.connect("");
 
 app.use("/public/", express.static(__dirname + "/public"));
 

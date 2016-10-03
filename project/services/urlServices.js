@@ -1,5 +1,7 @@
-var longToShortHash = {};
-var shortToLongHash = {};
+// var longToShortHash = {};
+// var shortToLongHash = {};
+
+var UrlModel = require("../models/urlModel.js");
 
 var encode = [];
 
@@ -18,23 +20,42 @@ encode = encode.concat(genCharArray('a','z'));
 encode = encode.concat(genCharArray('A','Z'));
 encode = encode.concat(genCharArray('0','9'));
 
-var getShortUrl = function(longUrl) {
+var getShortUrl = function(longUrl, callback) {
 	if (longUrl.indexOf('http') === -1) {
 		longUrl = "http://" + longUrl;
 	}
 
-	if (longToShortHash[longUrl] != null) {
-		return longToShortHash[longUrl];
-	} else {
-		var shortUrl = generateShortUrl();
-		longToShortHash[longUrl] = shortUrl;
-		shortToLongHash[shortUrl] = longUrl;
-		return shortUrl;
-	}
+	UrlModel.findOne({ longUrl: longUrl }, function(err, data) {
+		if (data) {
+			callback(data);
+		} else {
+			generateShortUrl(function(shortUrl) {
+				var url = new UrlModel({ 
+					shortUrl: shortUrl,
+					longUrl: longUrl
+				});
+				url.save();
+				callback(url);
+			});
+		}
+	});
+	// if (longToShortHash[longUrl] != null) {
+	// 	return longToShortHash[longUrl];
+	// } else {
+	// 	var shortUrl = generateShortUrl();
+	// 	longToShortHash[longUrl] = shortUrl;
+	// 	shortToLongHash[shortUrl] = longUrl;
+	// 	return shortUrl;
+	// }
 };
 
-var generateShortUrl = function() {
-	return convertTo62(Object.keys(longToShortHash).length);
+var generateShortUrl = function(callback) {
+
+	urlModel.count({}, function(err, num) {
+		callback(convertTo62(num));
+	});
+
+	// return convertTo62(Object.keys(longToShortHash).length);
 };
 
 var convertTo62 = function(num) {
@@ -47,8 +68,11 @@ var convertTo62 = function(num) {
 	return result;
 }
 
-var getLongUrl = function(shortUrl) {
-	return shortToLongHash[shortUrl];
+var getLongUrl = function(shortUrl ,callback) {
+	// return shortToLongHash[shortUrl];
+	UrlModel.findOne({ shortUrl: shortUrl }, function(err, data) {
+		callback(data);
+	});
 };
 
 module.exports = {
