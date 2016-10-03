@@ -1,0 +1,32 @@
+WebServerContainer:
+  build: ./nginx
+  ports:
+    - "80:80"
+  links:
+    - "app1:app1"
+    - "app2:app2"
+    - "app3:app3"
+
+app1: 
+  build: ./project
+  ports:
+    - "3000"
+  links:
+    - "cacheContainer:redis"
+
+app2: 
+  build: ./project
+  ports:
+    - "3000"
+  links:
+    - "cacheContainer:redis"
+
+app3: 
+  build: ./project
+  ports:
+    - "3000"
+  links:
+    - "cacheContainer:redis"
+
+cacheContainer:
+  image: redis
