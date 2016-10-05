@@ -5,7 +5,7 @@ var redirectRouter = require('./routers/redirect');
 var indexRouter = require('./routers/index');
 var mongoose = require('mongoose');
 
-mongoose.connect("");
+mongoose.connect("mongodb://user:user@ds049436.mlab.com:49436/tinyurl");
 
 app.use("/public/", express.static(__dirname + "/public"));
 
