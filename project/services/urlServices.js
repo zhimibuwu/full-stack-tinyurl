@@ -1,7 +1,7 @@
 // var longToShortHash = {};
 // var shortToLongHash = {};
 
-var UrlModel = require("../models/urlModel.js");
+var urlModel = require("../models/urlModel");
 var redis = require("redis");
 
 var port = process.env.REDIS_PORT_6379_TCP_PORT;
@@ -38,14 +38,14 @@ var getShortUrl = function(longUrl, callback) {
 				longUrl: longUrl
 			});
 		} else {
-			UrlModel.findOne({ longUrl: longUrl }, function(err, data) {
+			urlModel.findOne({ longUrl: longUrl }, function(err, data) {
 				if (data) {
 					callback(data);
 					redisClient.set(data.shortUrl, data.longUrl);
 					redisClient.set(data.longUrl, data.shortUrl);
 				} else {
 					generateShortUrl(function(shortUrl) {
-						var url = new UrlModel({ 
+						var url = new urlModel({
 							shortUrl: shortUrl,
 							longUrl: longUrl
 						});
@@ -98,7 +98,7 @@ var getLongUrl = function(shortUrl ,callback) {
 				longUrl: longUrl
 			});
 		} else {
-			UrlModel.findOne({ shortUrl: shortUrl }, function(err, data) {
+			urlModel.findOne({ shortUrl: shortUrl }, function(err, data) {
 				callback(data);
 				redisClient.set(shortUrl, longUrl);
 				redisClient.set(longUrl, shortUrl);

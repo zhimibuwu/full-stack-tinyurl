@@ -1,13 +1,13 @@
 FROM node:6.3.1
 
-RUN mkdir -p /project
+RUN mkdir -p /tiny
 
-WORKDIR /project
+WORKDIR /tiny
 
-ADD . /project
+ADD . /tiny
 
-RUN cd /project && npm install
+RUN cd /tiny && npm install
 
 EXPOSE 3000
 
-CMD [“node”, “/app/server.js”]
+CMD ["node", "/tiny/server.js"]

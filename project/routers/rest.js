@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
-var urlService = require('../services/urlServices');
+var urlServices = require('../services/urlServices');
 
 router.post("/urls", jsonParser, function(req, res) {
 	var longUrl = req.body.longUrl;
 	// var shortUrl = urlService.getShortUrl(longUrl);
-	urlService.getShortUrl(longUrl, function(url) {
-		res.json(url);	
+	urlServices.getShortUrl(longUrl, function(url) {
+		res.json(url);
 	});
 	// res.json({
 		// shortUrl: shortUrl,
