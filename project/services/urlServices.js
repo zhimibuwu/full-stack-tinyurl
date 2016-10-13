@@ -8,6 +8,7 @@ var port = process.env.REDIS_PORT_6379_TCP_PORT;
 var host = process.env.REDIS_PORT_6379_TCP_ADDR;
 
 var redisClient = redis.createClient(port, host);
+redisClient.flushall();
 
 var encode = [];
 
@@ -41,8 +42,10 @@ var getShortUrl = function(longUrl, callback) {
 			urlModel.findOne({ longUrl: longUrl }, function(err, data) {
 				if (data) {
 					callback(data);
-					redisClient.set(data.shortUrl, data.longUrl);
-					redisClient.set(data.longUrl, data.shortUrl);
+					if (data.longUrl && data.shortUrl) {
+						redisClient.set(data.shortUrl, data.longUrl);
+						redisClient.set(data.longUrl, data.shortUrl);
+					}
 				} else {
 					generateShortUrl(function(shortUrl) {
 						var url = new urlModel({
@@ -51,8 +54,10 @@ var getShortUrl = function(longUrl, callback) {
 						});
 						url.save();
 						callback(url);
-						redisClient.set(shortUrl, longUrl);
-						redisClient.set(longUrl, shortUrl);
+						if (shortUrl) {
+							redisClient.set(shortUrl, longUrl);
+							redisClient.set(longUrl, shortUrl);
+						}
 					});
 				}
 			});
@@ -100,8 +105,10 @@ var getLongUrl = function(shortUrl ,callback) {
 		} else {
 			urlModel.findOne({ shortUrl: shortUrl }, function(err, data) {
 				callback(data);
-				redisClient.set(shortUrl, longUrl);
-				redisClient.set(longUrl, shortUrl);
+				if (data && shortUrl) {
+					redisClient.set(shortUrl, longUrl);
+					redisClient.set(longUrl, shortUrl);
+				}
 			});
 		}
 	});

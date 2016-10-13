@@ -1,5 +1,7 @@
 FROM node:6.3.1
 
+RUN npm install -g nodemon
+
 RUN mkdir -p /tiny
 
 WORKDIR /tiny
@@ -10,4 +12,4 @@ RUN cd /tiny && npm install
 
 EXPOSE 3000
 
-CMD ["node", "/tiny/server.js"]
+CMD ["nodemon", "/tiny/server.js"]

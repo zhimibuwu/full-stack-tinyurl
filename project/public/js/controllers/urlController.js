@@ -6,4 +6,8 @@ angular.module("tinyurlApp")
 				$scope.longUrl = data.longUrl;
 				$scope.shortUrlToShow = "http://localhost:3000/" + data.shortUrl;
 			});
+		$http.get("/api/v1/urls/" + $routeParams.shortUrl + "/totalClicks")
+			.success(function (data) {
+				$scope.totalClicks = data;
+			});
 	}]);
