@@ -29,6 +29,56 @@ var getUrlInfo = function(shortUrl, info, callback) {
         });
         return;
     }
+
+    var groupId = "";
+
+    if (info === "hour") {
+        groupId = {
+            year: { $year: "$timestamp"},
+            month: { $month: "$timestamp"},
+            day: { $dayOfMonth: "$timestamp"},
+            hour: { $hour: "$timestamp"},
+            minutes: { $minute: "$timestamp"},
+        }
+    } else if (info === "day") {
+        groupId = {
+            year: { $year: "$timestamp"},
+            month: { $month: "$timestamp"},
+            day: { $dayOfMonth: "$timestamp"},
+            hour: { $hour: "$timestamp"}
+        }
+    } else if (info === "month") {
+        groupId = {
+            year: { $year: "$timestamp"},
+            month: { $month: "$timestamp"},
+            day: { $dayOfMonth: "$timestamp"}
+        }
+    } else {
+        groupId= "$" + info;
+    }
+
+    RequestModel.aggregate([
+        {
+            $match: {
+                shortUrl: shortUrl
+            }
+        },
+        {
+            $sort: {
+                timestamp: -1
+            }
+        },
+        {
+            $group: {
+                _id: groupId,
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ], function(err, data) {
+        callback(data);
+    });
 }
 
 module.exports = {

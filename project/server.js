@@ -8,7 +8,8 @@ var useragent = require('express-useragent');
 
 mongoose.connect("mongodb://user:user@ds049436.mlab.com:49436/tinyurl");
 
-app.use("/public/", express.static(__dirname + "/public"));
+app.use("/public", express.static(__dirname + "/public"));
+app.use("/node_modules", express.static(__dirname + "/node_modules"));
 
 app.use(useragent.express());
 
