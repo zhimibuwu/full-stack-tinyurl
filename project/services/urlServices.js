@@ -42,10 +42,8 @@ var getShortUrl = function(longUrl, callback) {
 			urlModel.findOne({ longUrl: longUrl }, function(err, data) {
 				if (data) {
 					callback(data);
-					if (data.longUrl && data.shortUrl) {
-						redisClient.set(data.shortUrl, data.longUrl);
-						redisClient.set(data.longUrl, data.shortUrl);
-					}
+					redisClient.set(data.shortUrl, data.longUrl);
+					redisClient.set(data.longUrl, data.shortUrl);
 				} else {
 					generateShortUrl(function(shortUrl) {
 						var url = new urlModel({
@@ -54,10 +52,8 @@ var getShortUrl = function(longUrl, callback) {
 						});
 						url.save();
 						callback(url);
-						if (shortUrl) {
-							redisClient.set(shortUrl, longUrl);
-							redisClient.set(longUrl, shortUrl);
-						}
+						redisClient.set(shortUrl, longUrl);
+						redisClient.set(longUrl, shortUrl);
 					});
 				}
 			});
@@ -105,7 +101,7 @@ var getLongUrl = function(shortUrl ,callback) {
 		} else {
 			urlModel.findOne({ shortUrl: shortUrl }, function(err, data) {
 				callback(data);
-				if (data && shortUrl) {
+				if (data) {
 					redisClient.set(shortUrl, longUrl);
 					redisClient.set(longUrl, shortUrl);
 				}
